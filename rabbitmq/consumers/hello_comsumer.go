@@ -1,13 +1,14 @@
-package publshers
+package consumers
 
 import (
+	"fmt"
+	"log"
+
 	util "github.com/echenim/messagebrokers/rabbitmq/utils"
-	"github.com/streadway/amqp"
 )
 
-//HelloWorld simple publisher for hello world
+//HelloWorld simple hello world consumer
 func HelloWorld() {
-
 	con, er := util.ConnectRabbitMQ()
 	util.ErrorHandler(er, " Failed to connect to Broker ")
 	defer con.Close()
@@ -19,10 +20,15 @@ func HelloWorld() {
 
 	q, er := ch.QueueDeclare("myron world", false, false, false, false, nil)
 	util.ErrorHandler(er, "Queue declearation failed")
-	body := "Hello k36tee its time to feed"
-	er = ch.Publish("", q.Name, false, false, amqp.Publishing{
-		ContentType: "text/plain",
-		Body:        []byte(body),
-	})
+	msg, er := ch.Consume(q.Name, "", true, false, false, false, nil)
+	util.ErrorHandler(er, "Failed to register a consumer")
+	forever := make(chan bool)
 
+	go func() {
+		for d := range msg {
+			fmt.Printf("\n %v\n", string(d.Body))
+		}
+	}()
+	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	<-forever
 }
