@@ -4,18 +4,19 @@ import (
 	"encoding/json"
 	"log"
 
+	ent "github.com/echenim/messagebrokers/rabbitmq/entity"
 	util "github.com/echenim/messagebrokers/rabbitmq/utils"
 	"github.com/streadway/amqp"
 )
 
-type product struct {
-	ID       int
-	Thumb    []byte
-	Name     string
-	Group    string
-	Quantity int
-	Price    float64
-}
+// type product struct {
+// 	ID       int
+// 	Thumb    []byte
+// 	Name     string
+// 	Group    string
+// 	Quantity int
+// 	Price    float64
+// }
 
 //HelloWorld simple publisher for hello world
 func HelloWorld() {
@@ -53,21 +54,19 @@ func AvailableProducts() {
 	util.ErrorHandler(er, "failed to declear Query")
 
 	//create data defination
-	var content product
+	var content ent.Product
 	content.ID = 2
 	content.Name = "Rose Royce"
 	content.Group = "Exotic Cars"
 	content.Price = 104500.45
 
-	k := toJSON(content)
-
 	er = ch.Publish("", q.Name, false, false, amqp.Publishing{
 		ContentType: "",
-		Body:        k,
+		Body:        toJSON(content),
 	})
 }
 
-func toJSON(p product) []byte {
+func toJSON(p ent.Product) []byte {
 	b, err := json.Marshal(p)
 	if err != nil {
 		log.Fatalf("%s : %s", err, "Fail to convert to json")
