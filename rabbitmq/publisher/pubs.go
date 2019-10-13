@@ -31,6 +31,7 @@ func HelloWorld() {
 	defer ch.Close()
 
 	q, er := ch.QueueDeclare("myron world", false, false, false, false, nil)
+
 	util.ErrorHandler(er, "Queue declearation failed")
 	body := "Hello k36tee its time to feed"
 	er = ch.Publish("", q.Name, false, false, amqp.Publishing{
@@ -44,19 +45,22 @@ func HelloWorld() {
 func AvailableProducts() {
 	con, er := util.ConnectRabbitMQ()
 	util.ErrorHandler(er, "Failed to open connection")
-	defer con.Close()
+
+	//defer con.Close()
 
 	ch, er := con.Channel()
 	util.ErrorHandler(er, "Failed to open channel")
-	defer ch.Close()
+	ch.Confirm(true)
+
+	//defer ch.Close()
 
 	q, er := ch.QueueDeclare("products", false, false, false, false, nil)
 	util.ErrorHandler(er, "failed to declear Query")
 
 	//create data defination
 	var content ent.Product
-	content.ID = 2
-	content.Name = "Rose Royce"
+	content.ID = 5
+	content.Name = "Ford"
 	content.Group = "Exotic Cars"
 	content.Price = 104500.45
 
