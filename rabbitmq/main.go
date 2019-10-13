@@ -1,15 +1,15 @@
 package main
 
 import (
-	sumer "github.com/echenim/messagebrokers/rabbitmq/consumers"
-	pub "github.com/echenim/messagebrokers/rabbitmq/publishers"
+	//sumer "github.com/echenim/messagebrokers/rabbitmq/consumers"
+	pub "github.com/echenim/messagebrokers/rabbitmq/publisher"
 )
 
 func main() {
 
 	pub.HelloWorld()
-	pub.HelloWorld()
+	pub.AvailableProducts()
 
-	sumer.HelloWorld()
+	//sumer.HelloWorld()
 
 }
